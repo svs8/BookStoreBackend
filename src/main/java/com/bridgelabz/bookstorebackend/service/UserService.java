@@ -36,7 +36,7 @@ public class UserService implements IUserService {
     public UserRegistration registerUser(UserDTO userDTO) {
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         UserRegistration user = modelMapper.map(userDTO, UserRegistration.class);
-        String otp = getRandomNumberString();
+        String otp = generateRandomNumberString();
         Integer intOtp = Integer.parseInt(otp);
         user.setOtp(intOtp);
         iUserRepository.save(user);
@@ -45,22 +45,42 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Boolean verifyOtp(String email, Integer otp) {
+    public int verifyOtp(String email, Integer otp) {
         UserRegistration user = iUserRepository.findByEmailId(email);
+        if (user == null)
+            return 0;
         Integer serverOtp = user.getOtp();
-        if (otp == null)
-            return false;
         if (!(otp.equals(serverOtp)))
-            return false;
+            return 2;
         iUserRepository.changeVerified(email);
         emailService.sendEmail(user.getEmail(), "Verification Successful", "Hi " + user.getFirstName() + ", You have successfully " +
                 "verified your account. You can now login using Your email and password ");
-        return true;
+        return 1;
     }
 
 
+//    @Override
+//    public String loginUser(String email, String password) {
+//
+//        UserRegistration login = iUserRepository.findByEmailId(email);
+//        if (login != null) {
+//            if (login.getVerify() != null) {
+//                String pass = login.getPassword();
+//                System.out.println(pass);
+//                System.out.println(password);
+//                if (passwordEncoder.matches(password, login.getPassword())) {
+//                    return "User Login successfully and the token is: \n " + getToken(login.getEmail());
+//                } else {
+//                    return "Wrong Password";
+//                }
+//            }
+//            return "User is not Verified please verify and try to login";
+//        }
+//        return "User not found";
+//    }
+
     @Override
-    public String loginUser(String email, String password) {
+    public int loginUser(String email, String password) {
 
         UserRegistration login = iUserRepository.findByEmailId(email);
         if (login != null) {
@@ -69,23 +89,23 @@ public class UserService implements IUserService {
                 System.out.println(pass);
                 System.out.println(password);
                 if (passwordEncoder.matches(password, login.getPassword())) {
-                    return "User Login successfully and the token is: \n " + getToken(login.getEmail());
+                    return 1; //successful
                 } else {
-                    return "Wrong Password";
+                    return 2; //incorrect password
                 }
             }
-            return "User is not Verified please verify and try to login";
+            return 3;  //User not verified
         }
-        return "User not found";
+        return 0;
     }
 
-    private String getToken(String email) {
+    public String getToken(String email) {
         UserRegistration user = iUserRepository.findByEmailId(email);
         String token = tokenUtility.createToken(user.getUserId());
         return token;
     }
 
-    public static String getRandomNumberString() {
+    public static String generateRandomNumberString() {
         Random random = new Random();
         int number = random.nextInt(999999);
         return String.format("%06d", number);
@@ -103,6 +123,7 @@ public class UserService implements IUserService {
         Integer id = tokenUtility.decodeToken(token);
         UserRegistration user = this.getUserDataById(id);
         modelMapper.map(userDTO,user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         iUserRepository.save(user);
         return user;
     }

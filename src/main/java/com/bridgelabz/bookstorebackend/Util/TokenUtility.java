@@ -27,7 +27,7 @@ public class TokenUtility {
             exception.printStackTrace();
             //log Token Signing Failed
         } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
+            //Auto generated catch block
             e.printStackTrace();
         }
         return null;

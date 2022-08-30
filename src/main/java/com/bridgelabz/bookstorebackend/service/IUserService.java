@@ -11,9 +11,9 @@ public interface IUserService {
 
     UserRegistration registerUser(UserDTO userDTO);
 
-    Boolean verifyOtp(String email, Integer otp);
+    int verifyOtp(String email, Integer otp);
 
-    String loginUser(String email, String password);
+    int loginUser(String email, String password);
 
     Optional<UserRegistration> getUserDataByToken(String token);
 
@@ -24,5 +24,7 @@ public interface IUserService {
     UserRegistration deleteRecordByToken(String token);
 
     String forgotPassword(String email, String password);
+
+    String getToken(String email);
 
 }
