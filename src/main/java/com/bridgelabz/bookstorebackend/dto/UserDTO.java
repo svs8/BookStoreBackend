@@ -26,10 +26,10 @@ public class UserDTO {
     @NotEmpty(message = "Password cant be empty")
     private String password;
 
-    @JsonFormat(pattern="dd MMM yyyy")
+//    @JsonFormat(pattern="dd MMM yyyy")
     private LocalDate dob;
 
-    @JsonFormat(pattern="dd MMM yyyy")
+//    @JsonFormat(pattern="dd MMM yyyy")
     private LocalDate registeredDate;
 
 }

@@ -4,7 +4,6 @@ package com.bridgelabz.bookstorebackend.controller;
 import com.bridgelabz.bookstorebackend.dto.ResponseDTO;
 import com.bridgelabz.bookstorebackend.dto.UserDTO;
 import com.bridgelabz.bookstorebackend.dto.UserLoginDTO;
-import com.bridgelabz.bookstorebackend.dto.UserOtpVerificationDTO;
 import com.bridgelabz.bookstorebackend.model.UserRegistration;
 import com.bridgelabz.bookstorebackend.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+@CrossOrigin(origins="http://localhost:4200")
 @RestController
 @RequestMapping("/user")
 public class UserRegistrationController {
@@ -38,21 +38,25 @@ public class UserRegistrationController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping({"/verifyotp"})
-    public String verifyOtp(@Valid @RequestBody UserOtpVerificationDTO userNameOtpDTO) {
-        String email = userNameOtpDTO.getEmail();
-        Integer otp = userNameOtpDTO.getOtp();
-        Boolean isVerifyOtp = userRegistrationService.verifyOtp(email, otp);
-        if (!isVerifyOtp)
-            return FAIL;
-        return SUCCESS;
+    @GetMapping({"/verifyotp"})
+    public int verifyOtp(@RequestParam String email, @RequestParam Integer otp) {
+        int isVerifyOtp = userRegistrationService.verifyOtp(email, otp);
+       return isVerifyOtp;
     }
 
+
     @GetMapping("/login")
-    public String userLogin(@RequestParam String email,@RequestParam String password) {
+    public int userLogin(@RequestParam String email, @RequestParam String password) {
         UserLoginDTO userLoginDTO=new UserLoginDTO(email, password);
-        String response = userRegistrationService.loginUser(userLoginDTO.getEmail(),userLoginDTO.getPassword());
+        int response = userRegistrationService.loginUser(userLoginDTO.getEmail(),userLoginDTO.getPassword());
         return response;
+    }
+
+    @GetMapping("/getToken/{email}")
+    public ResponseEntity<ResponseDTO> getToken(@PathVariable String email){
+        String generatedToken=userRegistrationService.getToken(email);
+        ResponseDTO responseDTO=new ResponseDTO("Token for mail id sent on mail successfully",generatedToken);
+        return new ResponseEntity(responseDTO,HttpStatus.OK);
     }
 
     @GetMapping(value = "/getByToken/{token}")
@@ -78,7 +82,7 @@ public class UserRegistrationController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/forgotpassword")
+    @GetMapping("/forgotpassword")
     public String forgotPassword(@RequestParam String email, @RequestParam String newPassword) {
         return userRegistrationService.forgotPassword(email, newPassword);
     }
