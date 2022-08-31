@@ -33,7 +33,11 @@ public class UserService implements IUserService {
 
 
     @Override
-    public UserRegistration registerUser(UserDTO userDTO) {
+    public Integer registerUser(UserDTO userDTO) {
+        UserRegistration userStatus = iUserRepository.findByEmailId(userDTO.getEmail());
+        if(!(userStatus==null)){
+            return 1;
+            }
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         UserRegistration user = modelMapper.map(userDTO, UserRegistration.class);
         String otp = generateRandomNumberString();
@@ -41,7 +45,7 @@ public class UserService implements IUserService {
         user.setOtp(intOtp);
         iUserRepository.save(user);
         emailService.sendEmail(user.getEmail(), "Otp for Verification", "Hi" + user.getFirstName() + " Otp sent for verification purpose" + intOtp);
-        return user;
+        return 0;
     }
 
     @Override
@@ -59,25 +63,6 @@ public class UserService implements IUserService {
     }
 
 
-//    @Override
-//    public String loginUser(String email, String password) {
-//
-//        UserRegistration login = iUserRepository.findByEmailId(email);
-//        if (login != null) {
-//            if (login.getVerify() != null) {
-//                String pass = login.getPassword();
-//                System.out.println(pass);
-//                System.out.println(password);
-//                if (passwordEncoder.matches(password, login.getPassword())) {
-//                    return "User Login successfully and the token is: \n " + getToken(login.getEmail());
-//                } else {
-//                    return "Wrong Password";
-//                }
-//            }
-//            return "User is not Verified please verify and try to login";
-//        }
-//        return "User not found";
-//    }
 
     @Override
     public int loginUser(String email, String password) {
@@ -103,6 +88,11 @@ public class UserService implements IUserService {
         UserRegistration user = iUserRepository.findByEmailId(email);
         String token = tokenUtility.createToken(user.getUserId());
         return token;
+    }
+
+    @Override
+    public Object getIdByToken(String token) {
+        return tokenUtility.decodeToken(token);
     }
 
     public static String generateRandomNumberString() {

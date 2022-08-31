@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface IUserService {
 
 
-    UserRegistration registerUser(UserDTO userDTO);
+    Integer registerUser(UserDTO userDTO);
 
     int verifyOtp(String email, Integer otp);
 
@@ -26,5 +26,7 @@ public interface IUserService {
     String forgotPassword(String email, String password);
 
     String getToken(String email);
+
+    Object getIdByToken(String token);
 
 }

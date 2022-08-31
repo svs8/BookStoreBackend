@@ -33,7 +33,7 @@ public class UserRegistrationController {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> addUserInBookStore(@Valid @RequestBody UserDTO userDTO) {
-        UserRegistration userRegistration = userRegistrationService.registerUser(userDTO);
+        Integer userRegistration = userRegistrationService.registerUser(userDTO);
         ResponseDTO responseDTO = new ResponseDTO("User Registered Successfully", userRegistration);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
@@ -85,6 +85,14 @@ public class UserRegistrationController {
     @GetMapping("/forgotpassword")
     public String forgotPassword(@RequestParam String email, @RequestParam String newPassword) {
         return userRegistrationService.forgotPassword(email, newPassword);
+    }
+
+    //Get user by user token from where we can extract ID
+    @GetMapping("/getIdByToken/{token}")
+    public ResponseEntity<ResponseDTO> getUserById(@PathVariable String token) {
+        return new ResponseEntity<ResponseDTO>( new
+                ResponseDTO("Get UserId By Token",
+                userRegistrationService.getIdByToken(token)), HttpStatus.OK);
     }
 
 
