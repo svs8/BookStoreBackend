@@ -81,7 +81,7 @@ public class UserService implements IUserService {
             }
             return 3;  //User not verified
         }
-        return 0;
+        return 0;//user not present
     }
 
     public String getToken(String email) {
