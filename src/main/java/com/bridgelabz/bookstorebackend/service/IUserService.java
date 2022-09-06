@@ -29,4 +29,8 @@ public interface IUserService {
 
     Object getIdByToken(String token);
 
+    UserRegistration updateRecordById(Integer id, UserDTO userDTO);
+
+
+
 }

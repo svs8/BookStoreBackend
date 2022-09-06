@@ -16,7 +16,7 @@ public class SpringConfiguration {
     @Bean
     public Docket postsApi() {
         return new Docket(DocumentationType.SWAGGER_2).groupName("public-api")
-                .apiInfo(apiInfo()).select().paths(regex("/user.*|/book.*|/cart.*|/wishlist.*")).build();
+                .apiInfo(apiInfo()).select().paths(regex("/user.*|/book.*|/cart.*|/wishlist.*|/order.*")).build();
     }
     private ApiInfo apiInfo() {
         springfox.documentation.service.Contact contact = new Contact("Demo Project API", "http://brigelbaz.com", "surakshithvittalshetty@gmail.com");

@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.Random;
 
@@ -141,6 +142,19 @@ public class UserService implements IUserService {
         iUserRepository.updateNewPassword(email, newPassword);
         return "Password updated successfully";
     }
+
+
+
+    @Override
+    public UserRegistration updateRecordById(Integer id, @Valid UserDTO userDTO) {
+        UserRegistration newUser = this.getUserDataById(id);
+        if(newUser==null)
+            return null;//User Details for id not found
+        modelMapper.map(userDTO,newUser);
+        iUserRepository.save(newUser);
+        return newUser;
+    }
+
 
     }
 

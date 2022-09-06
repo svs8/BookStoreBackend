@@ -94,6 +94,23 @@ public class UserRegistrationController {
                 ResponseDTO("Get UserId By Token",
                 userRegistrationService.getIdByToken(token)), HttpStatus.OK);
     }
+//get user by id
+    @GetMapping(value = "/getuserById/{id}")
+    public ResponseEntity<String> getAllUserById(@PathVariable int id)
+    {
+        UserRegistration user = userRegistrationService.getUserDataById(id);
+        ResponseDTO dto = new ResponseDTO("User retrieved successfully ",user);
+        return new ResponseEntity(dto,HttpStatus.OK);
+    }
+
+
+    // Update user by id
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateRecordById(@PathVariable Integer id,@RequestBody UserDTO userDTO){
+        UserRegistration entity = userRegistrationService.updateRecordById(id,userDTO);
+        ResponseDTO dto = new ResponseDTO("User Record updated successfully",entity);
+        return new ResponseEntity(dto,HttpStatus.ACCEPTED);
+    }
 
 
 }

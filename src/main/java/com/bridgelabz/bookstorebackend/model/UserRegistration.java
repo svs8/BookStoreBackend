@@ -1,5 +1,6 @@
 package com.bridgelabz.bookstorebackend.model;
 
+import com.bridgelabz.bookstorebackend.dto.UserDTO;
 import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,5 +24,6 @@ public class UserRegistration {
     private LocalDate registeredDate;
     private Boolean verify;
     private Integer otp;
+
 
 }
