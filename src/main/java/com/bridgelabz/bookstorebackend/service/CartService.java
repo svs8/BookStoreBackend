@@ -133,12 +133,12 @@ public class CartService implements ICartService {
         if (cart.isPresent()) {//Checking if cart is present
             Optional<Book> book = bookStoreRepository.findById(cart.get().getBook().getBookId());
             if ((book.get().getQuantity()) < 0) {//Making sure the book quantity in the home is not going les than 0
-                book.get().setQuantity(0);
+                book.get().setQuantity(0);//book quantity within home is set to zero
                 bookStoreRepository.save(book.get());
                 return null;
             }
             if ((book.get().getQuantity()) >= 0) {
-                book.get().setQuantity(book.get().getQuantity() - (quantity - cart.get().getQuantity()));
+                book.get().setQuantity(book.get().getQuantity() - (quantity - cart.get().getQuantity()));//updating book quantity at book repository
                 cart.get().setQuantity(quantity);
                 bookStoreCartRepository.save(cart.get());
                 bookStoreRepository.save(book.get());
